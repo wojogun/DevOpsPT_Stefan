@@ -78,8 +78,9 @@ app.get('/api/notes/:id', (request, response) => {
   }
 })
 
-const PORT = 3001
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
-module.exports = app;  // Export the app for testing
+const PORT = 3001;
+const server = app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+module.exports = { app, server };
