@@ -2,7 +2,7 @@ const request = require('supertest');
 const app = require('../index');
 
 afterAll((done) => {
-    server.close(done);
+    index.close(done);
   });
 
 describe('GET /api/notes', () => {
