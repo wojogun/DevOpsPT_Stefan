@@ -1,6 +1,10 @@
 const request = require('supertest');
 const app = require('../index');
 
+afterAll((done) => {
+    server.close(done);
+  });
+
 describe('GET /api/notes', () => {
   test('should return all notes', async () => {
     const response = await request(app).get('/api/notes');
