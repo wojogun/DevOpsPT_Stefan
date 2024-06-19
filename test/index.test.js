@@ -1,9 +1,9 @@
 const request = require('supertest');
-const app = require('../index');
+const { app, server } = require('../index');
 
 afterAll((done) => {
-    server.close(done);
-  });
+  server.close(done);
+});
 
 describe('GET /api/notes', () => {
   test('should return all notes', async () => {
