@@ -1,12 +1,11 @@
 {
-  "type": "module",
   "name": "noteapp",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "mocha --loader esm 'test/**/*.test.js'",
+    "test": "mocha \"test/**/*.test.js\"",
     "lint": "eslint ."
   },
   "author": "",
@@ -15,7 +14,7 @@
     "express": "^4.17.3"
   },
   "devDependencies": {
-    "chai": "^5.2.0",
+    "chai": "^4.3.7",
     "eslint": "^9.28.0",
     "eslint-plugin-n": "^17.19.0",
     "globals": "^16.2.0",

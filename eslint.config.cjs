@@ -1,7 +1,8 @@
-import globals from 'globals';
-import eslintPluginNode from 'eslint-plugin-n';
 
-export default [
+const globals = require('globals');
+const eslintPluginNode = require('eslint-plugin-n');
+
+module.exports = [
   {
     files: ['**/*.js'],
     languageOptions: {
@@ -17,7 +18,6 @@ export default [
     rules: {
       'no-unused-vars': 'warn',
       'no-undef': 'error',
-      'no-console': 'off',
     },
   },
   {
