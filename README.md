@@ -18,3 +18,6 @@ npm start
 ```bash
 npm run dev
 ```
+
+### Hier ist die [Dokumentation](doku.md)
+
