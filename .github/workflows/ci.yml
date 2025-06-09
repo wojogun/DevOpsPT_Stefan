@@ -33,6 +33,7 @@ jobs:
   docker:
     needs: testing
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout repo
@@ -42,9 +43,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+
       - name: Get version from package.json
         id: pkg
-        run: echo "version=$(node -p 'require(\"./package.json\").version')" >> $GITHUB_OUTPUT
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -53,6 +57,15 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Docker image
+        env:
+          VERSION: ${{ steps.pkg.outputs.version }}
+          USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/noteapp:${{ steps.pkg.outputs.version }} .
-          docker push ${{ secrets.DOCKER_USERNAME }}/noteapp:${{ steps.pkg.outputs.version }}
+          if [ -z "$USERNAME" ]; then
+            echo "DOCKER_USERNAME is not set!"
+            exit 1
+          fi
+          docker build -t $USERNAME/noteapp:$VERSION .
+          docker tag $USERNAME/noteapp:$VERSION $USERNAME/noteapp:latest
+          docker push $USERNAME/noteapp:$VERSION
+          docker push $USERNAME/noteapp:latest
