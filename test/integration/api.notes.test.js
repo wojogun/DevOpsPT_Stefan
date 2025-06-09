@@ -1,6 +1,6 @@
-const request = require('supertest');
-const { expect } = require('chai');
-const app = require('../../index');
+import request from 'supertest';
+import { expect } from 'chai';
+import app from '../../index.js';
 
 describe('Notes API', () => {
   it('GET /api/notes returns JSON and 200 OK', async () => {
