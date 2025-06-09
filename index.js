@@ -29,14 +29,6 @@ app.get('/', (req, res) => {
 })
 
 const { generateId } = require('./utils/notes');
-/*
-const generateId = () => {
-  const maxId = notes.length > 0
-    ? Math.max(...notes.map(n => n.id))
-    : 0
-  return maxId + 1
-}
-*/
 
 app.post('/api/notes', (request, response) => {
   const body = request.body
@@ -51,7 +43,7 @@ app.post('/api/notes', (request, response) => {
     content: body.content,
     important: body.important || false,
     date: new Date(),
-    id: generateId(),
+    id: generateId(notes),
   }
 
   notes = notes.concat(note)

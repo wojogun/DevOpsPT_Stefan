@@ -1,7 +1,7 @@
-const globals = require('globals');
-const eslintPluginNode = require('eslint-plugin-n');
+import globals from 'globals';
+import eslintPluginNode from 'eslint-plugin-n';
 
-module.exports = [
+export default [
   {
     files: ['**/*.js'],
     languageOptions: {
@@ -20,4 +20,12 @@ module.exports = [
       'no-console': 'off',
     },
   },
+  {
+    files: ['test/**/*.test.js'],
+    languageOptions: {
+      globals: {
+        ...globals.mocha,
+      },
+    },
+  }
 ];
