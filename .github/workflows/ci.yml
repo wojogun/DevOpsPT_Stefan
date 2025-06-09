@@ -33,7 +33,7 @@ jobs:
   docker:
     needs: testing
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main')
 
     steps:
       - name: Checkout repo
