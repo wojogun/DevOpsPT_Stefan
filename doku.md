@@ -154,3 +154,57 @@ COPY . .
 EXPOSE 3001
 CMD ["npm", "start"]
 ```
+Nun folgen Anpassungen im Workflow:
+Aufteilung in 2 Jobs:
+- Testing
+- Docker
+
+## dependabot
+> git checkout -b feature/dependabot
+> touch .gitlab/dependabot.yml
+```
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore"
+```
+
+Was das bewirkt:
+- Prüft täglich die package.json & package-lock.json
+- startet Pull Requests bei neuen Versionen
+- Begrenzt auf max. 5 gleichzeitige PRs
+- Fügt chore: als Commit-Präfix hinzu
+
+Nachdem der Merge des Branches in Main erfolgt war, kam auch schon das erste Update rein:  
+> npm_and_yarn in /. - Update #1031115562
+
+Um eine Rückmeldung von Dependabot zu bekommen, wenn keine Updates nötig sind, gibt es aktuell leider keine direkte Benachrichtigung von GitHub selbst. GitHub verhält sich dabei sehr „still“ – kein Pull Request heißt: alles aktuell. Aber man kann sich das Log von Dependabot ansehen:
+> Im Repo: Insights/Dependency Graph/Dependabot
+
+## SonarCube Cloud
+Erst mal muss man sich auf https://sonarcloud.io/ registrieren, wobei die Authentifizierung über github erfolgen kann. Bei der Gelegenheit wurde auch gleich das Repo verknüpft bzw für Sonar berechtigt.
+
+Dann muss man dort einen neuen Token anlegen: My Account/Security
+Achtung! Dieser Token wird nur einmal angezeigt, also rauskopieren. Hinterlegt wird er dann in den Github-Secrets unter SONAR_TOKEN
+
+
+
+sonar-for-devops-stefan d73db44b27c5b7102d8444cd6117183965b674d5
+
+    # if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main')
+
+✅ Import des Projekts https://github.com/t-stefan/FHB-Assignment-Backend
+Folgende Anforderungen müssen erfüllt werden
+✅ Anlage eines automatischen Builds der bei jedem Pull-Request in den Main läuft und auch bei jedem Push in den Main Branch selbst.
+✅ Erstellen eines Docker Containers bei jedem Push in den Main Branch. Dieser Container muss mit einem Tag z.B.: Versionsnummer versehen in eine Container Registry hochgeladen werden.
+✅ Anlage von mindestens 3 Unit Tests und 2 Integrationstests.
+✅ Aufnahme der Tests in den Build für jeden Pull-Request in den Main Branch sowie bei jedem Push in den Main Branch selbst
+✅ Installation und Konfiguration (beliebige Konfiguration von jenen die bei der Installation vorgeschlagen werden) von ESLint für das Projekt.
+✅ Aufnahme von ESLint in den Build bei jedem Pull-Request in den Main Branch. Ebenso muss dies als Quality-Gate konfiguriert werden.
+✅ Konfiguration eines Automatismus zum Update von Fremdkomponenten, wenn es eine neue Version gibt (z.B.: snyk, Dependabot, …)
+Konfiguration von Statischer Code Analyse inklusive Quality Gate(s) Diese sollen auch bei jedem Pull-Request in den Main Branch ausgeführt werden.
