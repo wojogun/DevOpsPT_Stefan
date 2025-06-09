@@ -65,6 +65,7 @@ jobs:
             echo "DOCKER_USERNAME is not set!"
             exit 1
           fi
+          echo "build -t $USERNAME/noteapp:$VERSION"
           docker build -t $USERNAME/noteapp:$VERSION .
           docker tag $USERNAME/noteapp:$VERSION $USERNAME/noteapp:latest
           docker push $USERNAME/noteapp:$VERSION
