@@ -29,14 +29,7 @@ jobs:
 
       - name: Run Tests
         run: npm test
-
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2
-        with:
-          projectBaseDir: .
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
+        
   docker:
     needs: testing
     runs-on: ubuntu-latest
@@ -80,7 +73,6 @@ jobs:
   sonarcloud:
     needs: testing
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
