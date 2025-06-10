@@ -190,21 +190,41 @@ Um eine Rückmeldung von Dependabot zu bekommen, wenn keine Updates nötig sind,
 Erst mal muss man sich auf https://sonarcloud.io/ registrieren, wobei die Authentifizierung über github erfolgen kann. Bei der Gelegenheit wurde auch gleich das Repo verknüpft bzw für Sonar berechtigt.
 
 Dann muss man dort einen neuen Token anlegen: My Account/Security
-Achtung! Dieser Token wird nur einmal angezeigt, also rauskopieren. Hinterlegt wird er dann in den Github-Secrets unter SONAR_TOKEN
+Achtung! Dieser Token wird nur einmal angezeigt, also rauskopieren. Hinterlegt wird er dann in den Github-Secrets unter SONAR_TOKEN.
 
+> touch sonar-project.properties
+```
+sonar.organization=wojogun
+sonar.projectKey=wojogun_DevOpsPT_Stefan
+sonar.projectName=noteapp
+sonar.sources=.
+sonar.exclusions=**/node_modules/**,**/test/**
+sonar.javascript.lcov.reportPaths=coverage/lcov.info
+```
+und die ci.yml muss auch noch angepasst werden (neuen Job hinzufügen):
+```
+  sonarcloud:
+    needs: testing
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-sonar-for-devops-stefan d73db44b27c5b7102d8444cd6117183965b674d5
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
 
-    # if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main')
+      - name: Install dependencies
+        run: npm ci
 
-✅ Import des Projekts https://github.com/t-stefan/FHB-Assignment-Backend
-Folgende Anforderungen müssen erfüllt werden
-✅ Anlage eines automatischen Builds der bei jedem Pull-Request in den Main läuft und auch bei jedem Push in den Main Branch selbst.
-✅ Erstellen eines Docker Containers bei jedem Push in den Main Branch. Dieser Container muss mit einem Tag z.B.: Versionsnummer versehen in eine Container Registry hochgeladen werden.
-✅ Anlage von mindestens 3 Unit Tests und 2 Integrationstests.
-✅ Aufnahme der Tests in den Build für jeden Pull-Request in den Main Branch sowie bei jedem Push in den Main Branch selbst
-✅ Installation und Konfiguration (beliebige Konfiguration von jenen die bei der Installation vorgeschlagen werden) von ESLint für das Projekt.
-✅ Aufnahme von ESLint in den Build bei jedem Pull-Request in den Main Branch. Ebenso muss dies als Quality-Gate konfiguriert werden.
-✅ Konfiguration eines Automatismus zum Update von Fremdkomponenten, wenn es eine neue Version gibt (z.B.: snyk, Dependabot, …)
-Konfiguration von Statischer Code Analyse inklusive Quality Gate(s) Diese sollen auch bei jedem Pull-Request in den Main Branch ausgeführt werden.
+      - name: Run SonarCloud analysis
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          projectBaseDir: .
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+```
+
