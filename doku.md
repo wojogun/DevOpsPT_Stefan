@@ -191,7 +191,7 @@ Erst mal muss man sich auf https://sonarcloud.io/ registrieren, wobei die Authen
 
 Dann muss man dort einen neuen Token anlegen: My Account/Security
 Achtung! Dieser Token wird nur einmal angezeigt, also rauskopieren. Hinterlegt wird er dann in den Github-Secrets unter SONAR_TOKEN.
-
+ 
 > touch sonar-project.properties
 ```
 sonar.organization=wojogun
@@ -200,7 +200,7 @@ sonar.projectName=noteapp
 sonar.sources=.
 sonar.exclusions=**/node_modules/**,**/test/**
 sonar.javascript.lcov.reportPaths=coverage/lcov.info
-```
+``` 
 und die ci.yml muss auch noch angepasst werden (neuen Job hinzufügen):
 ```
   sonarcloud:
