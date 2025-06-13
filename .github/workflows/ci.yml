@@ -2,9 +2,8 @@ name: CI-Pipeline-DevOpsPT-Stefan mit Build und Push Dockerimage
 
 on:
   push:
-    branches: 
+    branches:
       - main
-      - feature/*
   pull_request:
     branches: [ main ]
 
@@ -31,7 +30,7 @@ jobs:
 
       - name: Run Tests
         run: npm test
-        
+
   docker:
     needs: testing
     runs-on: ubuntu-latest
