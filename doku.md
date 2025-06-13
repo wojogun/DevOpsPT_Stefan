@@ -64,6 +64,7 @@ jobs:
     "start": "node index.js",
     "test": "mocha 'test/**/*.test.js'",
     "lint": "eslint ."
+},    
 ```
 
 ```
