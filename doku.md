@@ -2,7 +2,7 @@
 ## Import des Projekts von
 https://github.com/t-stefan/FHB-Assignment-Backend
 neu: wojogun/DevOpsPT_Stefan
-typ: public  
+typ: public
 Collaborators: wojogun, chpkt, livadeHe
 
 ``` git clone https://github.com/wojogun/DevOpsPT_Stefan.git
@@ -64,7 +64,7 @@ jobs:
     "start": "node index.js",
     "test": "mocha 'test/**/*.test.js'",
     "lint": "eslint ."
-},    
+}
 ```
 
 ```
@@ -112,9 +112,11 @@ touch test/integration/api.notes.test.js
 ```
 
 Auslagern von ID-Genierierung (von index.js)
-> mkdir utils
-> touch utils/notes.js
-> touch test/unit/utils.test.js
+```
+mkdir utils
+touch utils/notes.js
+touch test/unit/utils.test.js
+```
 
 index.js so anpassen, dass man app exportieren kann,
 letzten Teil ändern auf:
@@ -130,18 +132,20 @@ if (require.main === module) {
 module.exports = app
 ```
 "app exportieren" bedeutet, dass man den Express-Server (also die app-Instanz) aus der index.js-Datei für andere Dateien zugänglich macht. Die index.js startet standardmäßig den server mit app.listen(...)
-Hat man dann ein require() in einem Test würde nochmals ein Server gestartet --> "Address already in use"
+Hat man dann ein require() in einem Test würde nochmals ein Server gestartet  --> "Address already in use"
 
-Pull-Request und Merge habe an dieser Stelle fehlerfrei geklappt
+**Pull-Request und Merge haben an dieser Stelle fehlerfrei geklappt**
 
 ## Docker
-Im Repo werden nun Secrets für Dockerhub angelegt.  
+Im Repo werden nun Secrets für Dockerhub angelegt.
 Settings/Secretes and variables/Actions
 - DOCKER_USERNAME
 - DOCKER_PASSWORD
 
-> git checkout -b feature/docker
-> touch Dockerfile
+```
+git checkout -b feature/docker
+touch Dockerfile
+```
 ```
 FROM node:22
 
@@ -161,8 +165,10 @@ Aufteilung in 2 Jobs:
 - Docker
 
 ## dependabot
-> git checkout -b feature/dependabot
-> touch .gitlab/dependabot.yml
+```
+git checkout -b feature/dependabot
+touch .gitlab/dependabot.yml
+```
 ```
 version: 2
 updates:
@@ -181,7 +187,7 @@ Was das bewirkt:
 - Begrenzt auf max. 5 gleichzeitige PRs
 - Fügt chore: als Commit-Präfix hinzu
 
-Nachdem der Merge des Branches in Main erfolgt war, kam auch schon das erste Update rein:  
+Nachdem der Merge des Branches in Main erfolgt war, kam auch schon das erste Update rein:
 > npm_and_yarn in /. - Update #1031115562
 
 Um eine Rückmeldung von Dependabot zu bekommen, wenn keine Updates nötig sind, gibt es aktuell leider keine direkte Benachrichtigung von GitHub selbst. GitHub verhält sich dabei sehr „still“ – kein Pull Request heißt: alles aktuell. Aber man kann sich das Log von Dependabot ansehen:
@@ -191,21 +197,41 @@ Um eine Rückmeldung von Dependabot zu bekommen, wenn keine Updates nötig sind,
 Erst mal muss man sich auf https://sonarcloud.io/ registrieren, wobei die Authentifizierung über github erfolgen kann. Bei der Gelegenheit wurde auch gleich das Repo verknüpft bzw für Sonar berechtigt.
 
 Dann muss man dort einen neuen Token anlegen: My Account/Security
-Achtung! Dieser Token wird nur einmal angezeigt, also rauskopieren. Hinterlegt wird er dann in den Github-Secrets unter SONAR_TOKEN
+Achtung! Dieser Token wird nur einmal angezeigt, also rauskopieren. Hinterlegt wird er dann in den Github-Secrets unter SONAR_TOKEN.
 
+> touch sonar-project.properties
+```
+sonar.organization=wojogun
+sonar.projectKey=wojogun_DevOpsPT_Stefan
+sonar.projectName=noteapp
+sonar.sources=.
+sonar.exclusions=**/node_modules/**,**/test/**
+sonar.javascript.lcov.reportPaths=coverage/lcov.info
+```
+und die ci.yml muss auch noch angepasst werden (neuen Job hinzufügen):
+```
+  sonarcloud:
+    needs: testing
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-sonar-for-devops-stefan d73db44b27c5b7102d8444cd6117183965b674d5
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
 
-    # if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main')
+      - name: Install dependencies
+        run: npm ci
 
-✅ Import des Projekts https://github.com/t-stefan/FHB-Assignment-Backend
-Folgende Anforderungen müssen erfüllt werden
-✅ Anlage eines automatischen Builds der bei jedem Pull-Request in den Main läuft und auch bei jedem Push in den Main Branch selbst.
-✅ Erstellen eines Docker Containers bei jedem Push in den Main Branch. Dieser Container muss mit einem Tag z.B.: Versionsnummer versehen in eine Container Registry hochgeladen werden.
-✅ Anlage von mindestens 3 Unit Tests und 2 Integrationstests.
-✅ Aufnahme der Tests in den Build für jeden Pull-Request in den Main Branch sowie bei jedem Push in den Main Branch selbst
-✅ Installation und Konfiguration (beliebige Konfiguration von jenen die bei der Installation vorgeschlagen werden) von ESLint für das Projekt.
-✅ Aufnahme von ESLint in den Build bei jedem Pull-Request in den Main Branch. Ebenso muss dies als Quality-Gate konfiguriert werden.
-✅ Konfiguration eines Automatismus zum Update von Fremdkomponenten, wenn es eine neue Version gibt (z.B.: snyk, Dependabot, …)
-Konfiguration von Statischer Code Analyse inklusive Quality Gate(s) Diese sollen auch bei jedem Pull-Request in den Main Branch ausgeführt werden.
+      - name: Run SonarCloud analysis
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          projectBaseDir: .
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+```
+

@@ -4,5 +4,4 @@ const generateId = (notes) => {
     : 0;
   return maxId + 1;
 };
-
 module.exports = { generateId };

@@ -20,7 +20,7 @@ describe('Notes API', () => {
   it('POST /api/notes without content should return 400', async () => {
     const res = await request(app).post('/api/notes').send({});
     expect(res.status).to.equal(400);
-    expect(res.body).to.have.property('error', 'content missing');
+    expect(res.body).to.have.property('error', 'content missing or invalid');
   });
 
   it('GET /api/notes/:id should return a note or 404', async () => {
@@ -41,3 +41,4 @@ describe('Notes API', () => {
     expect(deleteRes.status).to.equal(204);
   });
 });
+
