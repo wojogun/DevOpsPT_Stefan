@@ -2,7 +2,7 @@
 ## Import des Projekts von
 https://github.com/t-stefan/FHB-Assignment-Backend
 neu: wojogun/DevOpsPT_Stefan
-typ: public  
+typ: public
 Collaborators: wojogun, chpkt, livadeHe
 
 ``` git clone https://github.com/wojogun/DevOpsPT_Stefan.git
@@ -64,6 +64,7 @@ jobs:
     "start": "node index.js",
     "test": "mocha 'test/**/*.test.js'",
     "lint": "eslint ."
+}
 ```
 
 ```
@@ -111,9 +112,11 @@ touch test/integration/api.notes.test.js
 ```
 
 Auslagern von ID-Genierierung (von index.js)
-> mkdir utils
-> touch utils/notes.js
-> touch test/unit/utils.test.js
+```
+mkdir utils
+touch utils/notes.js
+touch test/unit/utils.test.js
+```
 
 index.js so anpassen, dass man app exportieren kann,
 letzten Teil ändern auf:
@@ -129,18 +132,20 @@ if (require.main === module) {
 module.exports = app
 ```
 "app exportieren" bedeutet, dass man den Express-Server (also die app-Instanz) aus der index.js-Datei für andere Dateien zugänglich macht. Die index.js startet standardmäßig den server mit app.listen(...)
-Hat man dann ein require() in einem Test würde nochmals ein Server gestartet --> "Address already in use"
+Hat man dann ein require() in einem Test würde nochmals ein Server gestartet  --> "Address already in use"
 
-Pull-Request und Merge habe an dieser Stelle fehlerfrei geklappt
+**Pull-Request und Merge haben an dieser Stelle fehlerfrei geklappt**
 
 ## Docker
-Im Repo werden nun Secrets für Dockerhub angelegt.  
+Im Repo werden nun Secrets für Dockerhub angelegt.
 Settings/Secretes and variables/Actions
 - DOCKER_USERNAME
 - DOCKER_PASSWORD
 
-> git checkout -b feature/docker
-> touch Dockerfile
+```
+git checkout -b feature/docker
+touch Dockerfile
+```
 ```
 FROM node:22
 
@@ -160,8 +165,10 @@ Aufteilung in 2 Jobs:
 - Docker
 
 ## dependabot
-> git checkout -b feature/dependabot
-> touch .gitlab/dependabot.yml
+```
+git checkout -b feature/dependabot
+touch .gitlab/dependabot.yml
+```
 ```
 version: 2
 updates:
@@ -180,7 +187,7 @@ Was das bewirkt:
 - Begrenzt auf max. 5 gleichzeitige PRs
 - Fügt chore: als Commit-Präfix hinzu
 
-Nachdem der Merge des Branches in Main erfolgt war, kam auch schon das erste Update rein:  
+Nachdem der Merge des Branches in Main erfolgt war, kam auch schon das erste Update rein:
 > npm_and_yarn in /. - Update #1031115562
 
 Um eine Rückmeldung von Dependabot zu bekommen, wenn keine Updates nötig sind, gibt es aktuell leider keine direkte Benachrichtigung von GitHub selbst. GitHub verhält sich dabei sehr „still“ – kein Pull Request heißt: alles aktuell. Aber man kann sich das Log von Dependabot ansehen:
@@ -191,7 +198,7 @@ Erst mal muss man sich auf https://sonarcloud.io/ registrieren, wobei die Authen
 
 Dann muss man dort einen neuen Token anlegen: My Account/Security
 Achtung! Dieser Token wird nur einmal angezeigt, also rauskopieren. Hinterlegt wird er dann in den Github-Secrets unter SONAR_TOKEN.
- 
+
 > touch sonar-project.properties
 ```
 sonar.organization=wojogun
@@ -200,7 +207,7 @@ sonar.projectName=noteapp
 sonar.sources=.
 sonar.exclusions=**/node_modules/**,**/test/**
 sonar.javascript.lcov.reportPaths=coverage/lcov.info
-``` 
+```
 und die ci.yml muss auch noch angepasst werden (neuen Job hinzufügen):
 ```
   sonarcloud:
