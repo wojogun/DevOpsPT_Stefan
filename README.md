@@ -1,3 +1,5 @@
+### Hier ist die [Dokumentation](doku.md)
+
 # Notes Backend
 
 This repository is used as a starting point for an assignment. Originally it is from the amazing MOOC [FullStackOpen](https://fullstackopen.com/)
@@ -18,6 +20,4 @@ npm start
 ```bash
 npm run dev
 ```
-
-### Hier ist die [Dokumentation](doku.md)
 
