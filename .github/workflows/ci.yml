@@ -2,8 +2,10 @@ name: CI-Pipeline-DevOpsPT-Stefan mit Build und Push Dockerimage
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
+    branches: 
+      - main
+      - feature/*
+    pull_request:
     branches: [ main ]
 
 jobs:
